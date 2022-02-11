@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { jpushService } from "../../service/jpush.service";
-import { Descriptions, Badge } from "antd";
+import { Descriptions } from "antd";
 
 export class RecordsItem extends Component {
   constructor(props) {
@@ -29,7 +29,7 @@ export class RecordsItem extends Component {
       if (response.responseCode !== "RESPONSE_ERROR") {
         this.setState({
           timeToLive: response.timeToLive,
-          androidClicked: response.androidReceived,
+          androidReceived: response.androidReceived,
           iosReceived: response.iosReceived,
           androidClicked: response.androidClicked,
           pushTime: response.pushTime,

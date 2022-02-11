@@ -1,21 +1,18 @@
 import React, { Component } from "react";
 import { jpushService } from "../../service/jpush.service";
-import { Table, Input, Button, Space } from "antd";
+import { Input, Button, Space } from "antd";
 import Highlighter from 'react-highlight-words';
 import { SearchOutlined } from '@ant-design/icons';
+import JpushTable  from "./jpush_table";
 
 class JpushUserInfo extends Component {
   constructor(props) {
     super(props);
     this.state = {
       user_list: [],
-      current_page: 1,
-      page_size: 10,
       searchText: '',
       searchedColumn: '',
     };
-    this.paginationChange = this.paginationChange.bind(this);
-    this.pageSizeChange = this.pageSizeChange.bind(this);
   }
 
   componentWillMount() {
@@ -29,24 +26,11 @@ class JpushUserInfo extends Component {
 
   addName(){
     let data = this.state.user_list;
-    for (let i = 0; i < data.length; i++) {
-      data[i].name = data[i].rid;
+    for (let i of data) {
+      i.name = i.rid;
     }
     this.setState({
       user_list: data,
-    });
-  }
-
-  paginationChange(e) {
-    this.setState({
-      current_page: e,
-    });
-  }
-
-  pageSizeChange(current, size) {
-    this.setState({
-      current_page: 1,
-      page_size: size,
     });
   }
 
@@ -137,15 +121,10 @@ class JpushUserInfo extends Component {
         ...this.getColumnSearchProps('name'),
       },
       {
-        title: "城市",
-        dataIndex: "city",
-        key: "city",
-        ...this.getColumnSearchProps('city'),
-      },
-      {
         title: "省份",
         dataIndex: "province",
         key: "province",
+        width: 80,
         ...this.getColumnSearchProps('province'),
       },
       {
@@ -158,6 +137,7 @@ class JpushUserInfo extends Component {
         title: "地址",
         dataIndex: "address",
         key: "address",
+        ellipsis: true,
         ...this.getColumnSearchProps('address'),
       },
       {
@@ -206,32 +186,9 @@ class JpushUserInfo extends Component {
         ...this.getColumnSearchProps('tags'),
       },
     ];
-
     return (
       <div>
-        {/* <Search style={{float: 'right', width: '35%', marginBottom: '15px'}}
-                            placeholder="请输入会员ID或姓名"
-                            enterButton="搜索"
-                            onChange={(e) => {
-                                this.setState({search: e.target.value})
-                            }}
-                            value={this.state.search}
-                            onSearch={this.onSearch}
-                    /> */}
-        {this.state.user_list.length > 0 && (
-          <Table
-            dataSource={this.state.user_list}
-            columns={columns}
-            pagination={{
-              showQuickJumper: true,
-              total: this.state.total,
-              showSizeChanger: true,
-              onChange: this.paginationChange,
-              onShowSizeChange: this.pageSizeChange,
-              current: this.state.current_page,
-            }}
-          />
-        )}
+        <JpushTable columns={columns} dataSource={this.state.user_list}></JpushTable>
       </div>
     );
   }

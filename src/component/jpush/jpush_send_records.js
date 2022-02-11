@@ -1,23 +1,20 @@
 import React, { Component } from "react";
 import { jpushService } from "../../service/jpush.service";
 import { Image } from "react-bootstrap";
-import { Table, Button, Input, Space } from "antd";
+import { Button, Input, Space } from "antd";
 import Highlighter from "react-highlight-words";
 import { SearchOutlined } from "@ant-design/icons";
+import JpushTable from "./jpush_table";
 
 class JpushSendRecords extends Component {
   constructor(props) {
     super(props);
     this.state = {
       record_list: [],
-      current_page: 1,
-      page_size: 10,
-      searchText: "",
-      searchedColumn: "",
+      search: "",
+      searchColumn: "",
       filteredInfo: null,
     };
-    this.paginationChange = this.paginationChange.bind(this);
-    this.pageSizeChange = this.pageSizeChange.bind(this);
   }
 
   componentWillMount() {
@@ -28,22 +25,7 @@ class JpushSendRecords extends Component {
     });
   }
 
-  paginationChange(e) {
-    this.setState({
-      current_page: e,
-    });
-    //this.obtain_list(this.state.search, e, this.state.page_size,this.state.sort);
-  }
-
-  pageSizeChange(current, size) {
-    this.setState({
-      current_page: 1,
-      page_size: size,
-    });
-    //this.obtain_list(this.state.search, 1, size,this.state.sort);
-  }
-
-  getColumnSearchProps = (dataIndex) => ({
+  getColumnSearchProps = (data) => ({
     filterDropdown: ({
       setSelectedKeys,
       selectedKeys,
@@ -55,20 +37,20 @@ class JpushSendRecords extends Component {
           ref={(node) => {
             this.searchInput = node;
           }}
-          placeholder={`Search ${dataIndex}`}
+          placeholder={`Search ${data}`}
           value={selectedKeys[0]}
           onChange={(e) =>
             setSelectedKeys(e.target.value ? [e.target.value] : [])
           }
           onPressEnter={() =>
-            this.handleSearch(selectedKeys, confirm, dataIndex)
+            this.handleSearch(selectedKeys, confirm, data)
           }
           style={{ marginBottom: 8, display: "block" }}
         />
         <Space>
           <Button
             type="primary"
-            onClick={() => this.handleSearch(selectedKeys, confirm, dataIndex)}
+            onClick={() => this.handleSearch(selectedKeys, confirm, data)}
             icon={<SearchOutlined />}
             size="small"
             style={{ width: 90 }}
@@ -88,8 +70,8 @@ class JpushSendRecords extends Component {
             onClick={() => {
               confirm({ closeDropdown: false });
               this.setState({
-                searchText: selectedKeys[0],
-                searchedColumn: dataIndex,
+                search: selectedKeys[0],
+                searchColumn: data,
               });
             }}
           >
@@ -102,8 +84,8 @@ class JpushSendRecords extends Component {
       <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
     ),
     onFilter: (value, record) =>
-      record[dataIndex]
-        ? record[dataIndex]
+      record[data]
+        ? record[data]
             .toString()
             .toLowerCase()
             .includes(value.toLowerCase())
@@ -114,29 +96,29 @@ class JpushSendRecords extends Component {
       }
     },
     render: (text) =>
-      this.state.searchedColumn === dataIndex ? (
+      this.state.searchColumn === data ? (
         <Highlighter
           highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
-          searchWords={[this.state.searchText]}
+          searchWords={[this.state.search]}
           autoEscape
-          textToHighlight={text ? text.toString() : ""}
+          textToHighlight={text ? text.toString() : ''}
         />
       ) : (
         text
       ),
   });
 
-  handleSearch = (selectedKeys, confirm, dataIndex) => {
+  handleSearch = (selectedKeys, confirm, data) => {
     confirm();
     this.setState({
-      searchText: selectedKeys[0],
-      searchedColumn: dataIndex,
+      search: selectedKeys[0],
+      searchColumn: data,
     });
   };
 
   handleReset = (clearFilters) => {
     clearFilters();
-    this.setState({ searchText: "" });
+    this.setState({ search: "" });
   };
 
 
@@ -231,21 +213,7 @@ class JpushSendRecords extends Component {
     ];
     return (
       <div>
-        {this.state.record_list.length > 0 && (
-          <Table
-            dataSource={this.state.record_list}
-            columns={columns}
-            scroll={{ x: 1500 }}
-            pagination={{
-              showQuickJumper: true,
-              total: this.state.total,
-              showSizeChanger: true,
-              onChange: this.paginationChange,
-              onShowSizeChange: this.pageSizeChange,
-              current: this.state.current_page,
-            }}
-          />
-        )}
+        <JpushTable columns={columns} dataSource={this.state.record_list} scroll={{ x: 1500 }}></JpushTable>
       </div>
     );
   }

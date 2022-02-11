@@ -1,38 +1,28 @@
 import React, { Component } from "react";
-import { Form, Input, Button, notification, Radio, Table, Modal, Space } from "antd";
+import {
+  Input,
+  Button,
+  Radio,
+  Modal,
+  Space,
+} from "antd";
 import { jpushService } from "../../service/jpush.service";
-import Highlighter from 'react-highlight-words';
-import { SearchOutlined } from '@ant-design/icons';
+import Highlighter from "react-highlight-words";
+import { SearchOutlined } from "@ant-design/icons";
+import JpushTable from "./jpush_table";
+import JpushForm from './jpush_form';
 
 class JpushSend extends Component {
   constructor(props) {
     super(props);
 
-    this.process_notificationTitle = this.process_notificationTitle.bind(this);
-    this.process_notificationContent =
-      this.process_notificationContent.bind(this);
-    this.process_timeToLive = this.process_timeToLive.bind(this);
-    this.process_content = this.process_content.bind(this);
-    this.process_picurl = this.process_picurl.bind(this);
-    this.clear_content = this.clear_content.bind(this);
-    this.validate = this.validate.bind(this);
-    this.submit = this.submit.bind(this);
-    this.paginationChange = this.paginationChange.bind(this);
-    this.pageSizeChange = this.pageSizeChange.bind(this);
     this.getFilter = this.getFilter.bind(this);
     this.handleChange = this.handleChange.bind(this);
 
     this.state = {
-      notificationTitle: "",
-      notificationContent: "",
-      timeToLive: "",
-      pic_url: "",
-      content: "",
       filled: false,
       user_list: [],
       notificationStatus: "all",
-      current_page: 1,
-      page_size: 10,
       selectedRowKeys: [],
       loading: false,
       isModalVisible: false,
@@ -54,8 +44,8 @@ class JpushSend extends Component {
 
   setRidKey() {
     let data = this.state.user_list;
-    for (let i = 0; i < data.length; i++) {
-      data[i].key = data[i].rid;
+    for (let i of data) {
+      i.key = i.rid;
     }
     this.setState({
       user_list: data,
@@ -64,156 +54,20 @@ class JpushSend extends Component {
 
   setTagKey() {
     let data = this.state.user_list;
-    for (let i = 0; i < data.length; i++) {
-      data[i].key = data[i].tags;
+    for (let i of data) {
+      i.key = i.tags;
     }
     this.setState({
       user_list: data,
     });
   }
 
-  paginationChange(e) {
-    //console.log('Various parameters', pageSize, filters, sorter);
-    this.setState({
-      current_page: e,
-      //filteredInfo: filters,
-    });
-  }
-
-  handleChange({current: pageNum, pageSize}, filters, sorter) {
+  handleChange({ current: pageNum, pageSize }, filters, sorter) {
     this.setState({
       current_page: pageNum,
       filteredInfo: filters,
     });
   }
-
-  pageSizeChange(current, size) {
-    this.setState({
-      current_page: 1,
-      page_size: size,
-    });
-  }
-
-  process_notificationTitle(e) {
-    this.setState({ notificationTitle: e.target.value }, this.validate);
-  }
-
-  process_notificationContent(e) {
-    this.setState({ notificationContent: e.target.value }, this.validate);
-  }
-
-  process_timeToLive(e) {
-    this.setState({ timeToLive: e.target.value }, this.validate);
-  }
-
-  process_content(e) {
-    this.setState({ content: e.target.value });
-  }
-
-  process_picurl(e) {
-    this.setState({ pic_url: e.target.value });
-  }
-
-  clear_content = () => {
-    this.setState({
-      notificationTitle: "",
-      notificationContent: "",
-      timeToLive: "",
-      pic_url: "",
-      content: "",
-      filled: false,
-    });
-  };
-
-  validate = () => {
-    if (
-      this.state.notificationTitle !== "" &&
-      this.state.notificationContent !== "" &&
-      this.state.timeToLive !== ""
-    ) {
-      this.setState({ filled: true });
-    } else {
-      this.setState({ filled: false });
-    }
-  };
-
-  submit = () => {
-    jpushService
-      .sendToAll(
-        this.state.notificationTitle,
-        this.state.notificationContent,
-        this.state.pic_url,
-        this.state.content,
-        this.state.timeToLive
-      )
-      .then((result) => {
-        if (result === 1) {
-          notification.open({
-            message: "提交成功！",
-          });
-          this.clear_content();
-        } else {
-          notification.open({
-            message: "提交失败！",
-          });
-        }
-      });
-  };
-
-  submit1 = () => {
-    jpushService
-      .sendByRid(
-        this.state.notificationTitle,
-        this.state.notificationContent,
-        this.state.pic_url,
-        this.state.content,
-        this.state.timeToLive,
-        this.state.selectedRowKeys
-      )
-      .then((result) => {
-        if (result === 1) {
-          notification.open({
-            message: "提交成功！",
-          });
-          this.clear_content();
-        } else {
-          notification.open({
-            message: "提交失败！",
-          });
-        }
-      });
-    this.handleOk();
-  };
-
-  submit2 = () => {
-    let tagsList = [];
-    for (let i = 0, l = this.state.selectedRowKeys.length; i < l; i++) {
-      if (tagsList.indexOf(this.state.selectedRowKeys[i]) === -1) {
-        tagsList.push(this.state.selectedRowKeys[i]);
-      }
-    }
-    jpushService
-      .sendToTagsList(
-        this.state.notificationTitle,
-        this.state.notificationContent,
-        this.state.pic_url,
-        this.state.content,
-        this.state.timeToLive,
-        tagsList
-      )
-      .then((result) => {
-        if (result === 1) {
-          notification.open({
-            message: "提交成功！",
-          });
-          this.clear_content();
-        } else {
-          notification.open({
-            message: "提交失败！",
-          });
-        }
-      });
-  };
 
   onRadioChange = (e) => {
     if (e.target.value === "rid") {
@@ -222,7 +76,6 @@ class JpushSend extends Component {
     if (e.target.value === "tag") {
       this.setTagKey();
     }
-    this.clear_content();
     this.setState({
       selectedRowKeys: [],
       current_page: 1,
@@ -243,12 +96,6 @@ class JpushSend extends Component {
   showModal = () => {
     this.setState({
       isModalVisible: true,
-    });
-  };
-
-  handleOk = () => {
-    this.setState({
-      isModalVisible: false,
     });
   };
 
@@ -354,24 +201,22 @@ class JpushSend extends Component {
     this.setState({ searchText: "" });
   };
 
-  getFilter(){
+  getFilter() {
     let data = this.state.user_list;
     let filter = [];
     for (let i = 0, l = data.length; i < l; i++) {
       if (filter.indexOf(data[i].tags) === -1) {
-        filter.push({text: data[i].tags, value: data[i].tags});
+        filter.push({ text: data[i].tags, value: data[i].tags });
       }
     }
     this.setState({ filter: filter });
   }
-
 
   clearFilters = () => {
     this.setState({ filteredInfo: null });
   };
 
   render() {
-    //let { filteredInfo } = this.state.filteredInfo;
     this.state.filteredInfo = this.state.filteredInfo || {};
     const columns = [
       {
@@ -383,6 +228,7 @@ class JpushSend extends Component {
         title: "城市",
         dataIndex: "city",
         key: "city",
+        ellipsis: true,
       },
       {
         title: "省份",
@@ -398,6 +244,7 @@ class JpushSend extends Component {
         title: "地址",
         dataIndex: "address",
         key: "address",
+        ellipsis: true,
       },
       {
         title: "用户ID",
@@ -465,89 +312,9 @@ class JpushSend extends Component {
           <Radio.Button value="tag">指定同一标签的用户推送</Radio.Button>
         </Radio.Group>
         {this.state.notificationStatus === "all" && (
-          <Form layout="vertical">
-            <Form.Item
-              label="通知标题（必填）"
-              name="notificationTitle"
-              rules={[{ required: true, message: "Please input your title!" }]}
-              value={this.state.notificationTitle}
-              onChange={this.process_notificationTitle}
-            >
-              <Input
-                placeholder="请输入通知栏标题"
-                value={this.state.notificationTitle}
-              />
-            </Form.Item>
-            <Form.Item
-              label="通知内容简介（必填）"
-              name="notificationContent"
-              rules={[
-                { required: true, message: "Please input your content!" },
-              ]}
-              value={this.state.notificationContent}
-              onChange={this.process_notificationContent}
-            >
-              <Input
-                placeholder="请输入推送内容简介"
-                value={this.state.notificationContent}
-              />
-            </Form.Item>
-            <Form.Item
-              label="通知内容"
-              value={this.state.content}
-              onChange={this.process_content}
-            >
-              <Input.TextArea
-                placeholder="请输入推送内容"
-                value={this.state.content}
-              />
-            </Form.Item>
-            <Form.Item
-              label="推送时间（必填）"
-              name="time"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input a number!",
-                  type: "number",
-                },
-              ]}
-              value={this.state.timeToLive}
-              onChange={this.process_timeToLive}
-            >
-              <Input
-                placeholder="请输入存活时间"
-                value={this.state.timeToLive}
-              />
-            </Form.Item>
-            <Form.Item
-              label="推送图片"
-              value={this.state.pic_url}
-              onChange={this.process_picurl}
-            >
-              <Input placeholder="请输入图片url" value={this.state.pic_url} />
-            </Form.Item>
-            <Form.Item>
-              <Button
-                type="primary"
-                htmlType="submit"
-                disabled={!this.state.filled}
-                onClick={this.submit}
-              >
-                提交
-              </Button>
-              <Button
-                htmlType="button"
-                style={{ marginLeft: "10px" }}
-                onClick={this.clear_content}
-              >
-                重置
-              </Button>
-            </Form.Item>
-          </Form>
+          <JpushForm submit={this.submit} notiStatus="all"/>
         )}
-        {this.state.notificationStatus === "rid" &&
-          this.state.user_list.length > 0 && (
+        {this.state.user_list.length > 0 && (
             <div>
               <div style={{ marginBottom: 16 }}>
                 <Button
@@ -572,13 +339,13 @@ class JpushSend extends Component {
                   完成选择
                 </Button>
               </div>
+              {this.state.notificationStatus === "rid" && (
+                <div>
               <Modal
                 title="指定设备id推送"
                 visible={this.state.isModalVisible}
                 onOk={this.submit1}
                 onCancel={this.handleCancel}
-                // okText="提交"
-                // cancelText="取消"
                 footer={[
                   <Button
                     key="cancel"
@@ -588,254 +355,51 @@ class JpushSend extends Component {
                   >
                     取消
                   </Button>,
-                  <Button
-                    key="reset"
-                    htmlType="button"
-                    style={{ marginLeft: "10px" }}
-                    onClick={this.clear_content}
-                  >
-                    重置
-                  </Button>,
-                  <Button
-                    key="submit"
-                    type="primary"
-                    htmlType="submit"
-                    disabled={!this.state.filled}
-                    onClick={this.submit1}
-                  >
-                    提交
-                  </Button>,
                 ]}
                 okButtonProps={{ disabled: !this.state.filled }}
               >
-                <Form layout="vertical">
-                  <Form.Item
-                    label="通知标题（必填）"
-                    name="notificationTitle"
-                    rules={[
-                      { required: true, message: "Please input your title!" },
-                    ]}
-                    value={this.state.notificationTitle}
-                    onChange={this.process_notificationTitle}
-                  >
-                    <Input
-                      placeholder="请输入通知栏标题"
-                      value={this.state.notificationTitle}
-                    />
-                  </Form.Item>
-                  <Form.Item
-                    label="通知内容简介（必填）"
-                    name="notificationContent"
-                    rules={[
-                      { required: true, message: "Please input your content!" },
-                    ]}
-                    value={this.state.notificationContent}
-                    onChange={this.process_notificationContent}
-                  >
-                    <Input
-                      placeholder="请输入推送内容简介"
-                      value={this.state.notificationContent}
-                    />
-                  </Form.Item>
-                  <Form.Item
-                    label="通知内容"
-                    value={this.state.content}
-                    onChange={this.process_content}
-                  >
-                    <Input.TextArea
-                      placeholder="请输入推送内容"
-                      value={this.state.content}
-                    />
-                  </Form.Item>
-                  <Form.Item
-                    label="推送时间（必填）"
-                    name="time"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input a number!",
-                        type: "number",
-                      },
-                    ]}
-                    value={this.state.timeToLive}
-                    onChange={this.process_timeToLive}
-                  >
-                    <Input
-                      placeholder="请输入存活时间"
-                      value={this.state.timeToLive}
-                    />
-                  </Form.Item>
-                  <Form.Item
-                    label="推送图片"
-                    value={this.state.pic_url}
-                    onChange={this.process_picurl}
-                  >
-                    <Input
-                      placeholder="请输入图片url"
-                      value={this.state.pic_url}
-                    />
-                  </Form.Item>
-                </Form>
+                <JpushForm notiStatus="rid" selectedRowKeys={this.state.selectedRowKeys}/>
               </Modal>
-              <Table
+              <JpushTable
                 rowSelection={rowSelection}
                 dataSource={this.state.user_list}
                 columns={columns}
-                pagination={{
-                  showQuickJumper: true,
-                  total: this.state.total,
-                  showSizeChanger: true,
-                  onChange: this.paginationChange,
-                  onShowSizeChange: this.pageSizeChange,
-                  current: this.state.current_page,
-                }}
                 onChange={this.handleChange}
               />
-            </div>
-          )}
-        {this.state.notificationStatus === "tag" && (
-          <div>
-            <div style={{ marginBottom: 16 }}>
-              <Button
-                type="primary"
-                onClick={this.start}
-                disabled={!hasSelected}
-                loading={loading}
+              </div>
+              )}
+              {this.state.notificationStatus === "tag" && (
+              <div>
+                <Modal
+                closable="false"
+                title="指定同一标签的用户推送"
+                visible={this.state.isModalVisible}
+                onOk={this.handleCancel}
+                onCancel={this.handleCancel}
+                footer={[
+                  <Button
+                    key="cancel"
+                    htmlType="button"
+                    style={{ marginLeft: "10px" }}
+                    onClick={this.handleCancel}
+                  >
+                    取消
+                  </Button>,
+                ]}
               >
-                Reload
-              </Button>
-              <span style={{ marginLeft: 8 }}>
-                {hasSelected ? `Selected ${selectedRowKeys.length} items` : ""}
-              </span>
-              <Button
-                style={{ float: "right" }}
-                type="primary"
-                onClick={this.showModal}
-                disabled={!hasSelected}
-              >
-                完成选择
-              </Button>
-            </div>
-            <Modal
-              closable="false"
-              title="指定同一标签的用户推送"
-              visible={this.state.isModalVisible}
-              onOk={this.handleOk}
-              onCancel={this.handleCancel}
-              footer={[
-                <Button
-                  key="cancel"
-                  htmlType="button"
-                  style={{ marginLeft: "10px" }}
-                  onClick={this.handleCancel}
-                >
-                  取消
-                </Button>,
-                <Button
-                  key="reset"
-                  htmlType="button"
-                  style={{ marginLeft: "10px" }}
-                  onClick={this.clear_content}
-                >
-                  重置
-                </Button>,
-                <Button
-                  key="submit"
-                  type="primary"
-                  htmlType="submit"
-                  disabled={!this.state.filled}
-                  onClick={this.submit1}
-                >
-                  提交
-                </Button>,
-              ]}
-            >
-              <Form layout="vertical">
-                <Form.Item
-                  label="通知标题（必填）"
-                  title="notificationTitle"
-                  rules={[
-                    { required: true, message: "Please input your title!" },
-                  ]}
-                  value={this.state.notificationTitle}
-                  onChange={this.process_notificationTitle}
-                >
-                  <Input
-                    placeholder="请输入通知栏标题"
-                    value={this.state.notificationTitle}
-                  />
-                </Form.Item>
-                <Form.Item
-                  label="通知内容简介（必填）"
-                  name="notificationContent"
-                  rules={[
-                    { required: true, message: "Please input your content!" },
-                  ]}
-                  value={this.state.notificationContent}
-                  onChange={this.process_notificationContent}
-                >
-                  <Input
-                    placeholder="请输入推送内容简介"
-                    value={this.state.notificationContent}
-                  />
-                </Form.Item>
-                <Form.Item
-                  label="通知内容"
-                  value={this.state.content}
-                  onChange={this.process_content}
-                >
-                  <Input.TextArea
-                    placeholder="请输入推送内容"
-                    value={this.state.content}
-                  />
-                </Form.Item>
-                <Form.Item
-                  label="推送时间（必填）"
-                  name="time"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input your time!",
-                      type: "number",
-                    },
-                  ]}
-                  value={this.state.timeToLive}
-                  onChange={this.process_timeToLive}
-                >
-                  <Input
-                    placeholder="请输入存活时间"
-                    value={this.state.timeToLive}
-                  />
-                </Form.Item>
-                <Form.Item
-                  label="推送图片"
-                  value={this.state.pic_url}
-                  onChange={this.process_picurl}
-                >
-                  <Input
-                    placeholder="请输入图片url"
-                    value={this.state.pic_url}
-                  />
-                </Form.Item>
-              </Form>
-            </Modal>
-            <Table
-              rowSelection={rowSelection}
-              dataSource={this.state.user_list}
-              columns={columns}
-              pagination={{
-                showQuickJumper: true,
-                total: this.state.total,
-                showSizeChanger: true,
-                onChange: this.paginationChange,
-                onShowSizeChange: this.pageSizeChange,
-                currenst: this.state.current_page,
-              }}
-              onChange={this.handleChange}
-            />
-            <div>同一标签选择一名用户即可</div>
-          </div>
-        )}
+                 <JpushForm notiStatus="tag" selectedRowKeys={this.state.selectedRowKeys}></JpushForm>
+              </Modal>
+              <JpushTable
+                  rowSelection={rowSelection}
+                  dataSource={this.state.user_list}
+                  columns={columns}
+                  onChange={this.handleChange}
+                />
+              <div>同一标签选择一名用户即可</div>
+              </div>
+              )}
+        </div>
+      )}
       </div>
     );
   }

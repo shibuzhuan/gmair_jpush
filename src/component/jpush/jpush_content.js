@@ -6,7 +6,7 @@ import JpushUserInfo from './jpush_userinfo';
 import JpushSend from './jpush_send';
 import JpushSendRecords from './jpush_send_records';
 import Sidebar from "../sidebar/sidebar";
-import GmairHeader from "../header/header";
+import GmairHeader from "../header/GmairHeader";
 import RecordsItem from './records_item';
 
 const {Content} = Layout
@@ -27,7 +27,7 @@ class JpushContent extends React.Component {
                                 <Route path='/jpush'></Route>
                                 <div className="page-content">
                                     <div className="container-fluid">
-                                        <Route exact path='/jpush'></Route>
+                                        <Route exat path='/jpush'></Route>
                                         <Route path="/jpush/userinfo" render={() => (<JpushUserInfo/>)}/>
                                         <Route path="/jpush/send" render={() => (<JpushSend/>)}/>
                                         <Route exact path="/jpush/sendrecords" render={() => (<JpushSendRecords/>)}/>

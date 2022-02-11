@@ -1,8 +1,6 @@
 import React from 'react';
-import {Menu, Layout} from 'antd';
+import {Menu} from 'antd';
 import './ant_mydefine.css'
-
-const {Header} = Layout
 
 class GmairHeader extends React.Component {
     constructor() {
@@ -17,7 +15,7 @@ class GmairHeader extends React.Component {
         this.setState({
             current: e.key,
         });
-        if (e.key === "http://www.gmair.net" || e.key === "https://mall.jd.com/index-748610.html") {
+        if (e.key === "https://www.gmair.net" || e.key === "https://mall.jd.com/index-748610.html") {
             const w = window.open('about:blank');
             w.location.href = '' + e.key
 
@@ -31,7 +29,7 @@ class GmairHeader extends React.Component {
             <div className="logo"></div>
             <Menu theme="dark" mode="horizontal" style={{lineHeight: '64px'}}>
                 <Menu.Item>果麦新风</Menu.Item>
-                <Menu.Item key="http://www.gmair.net" onClick={this.handleClick}>官网</Menu.Item>
+                <Menu.Item key="https://www.gmair.net" onClick={this.handleClick}>官网</Menu.Item>
                 <Menu.Item key="https://mall.jd.com/index-748610.html" onClick={this.handleClick}>商城</Menu.Item>
             </Menu>
         </div>

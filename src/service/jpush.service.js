@@ -2,6 +2,13 @@ import axios from "axios";
 
 const jpush_server = "http://127.0.0.1:8080/msg";
 
+
+function ThrowError(){
+  return {
+    responseCode: "RESPONSE_ERROR",
+    description: "Fail to process the request",
+  };
+}
 function getAllUserInfo() {
   let obtain_url = jpush_server + "/getAllUserInfo";
   return axios
@@ -10,10 +17,7 @@ function getAllUserInfo() {
       return response.data;
     })
     .catch(() => {
-      return {
-        responseCode: "RESPONSE_ERROR",
-        description: "Fail to process the request",
-      };
+      ThrowError();
     });
 }
 
@@ -25,10 +29,7 @@ function getSendRecords() {
       return response.data;
     })
     .catch(() => {
-      return {
-        responseCode: "RESPONSE_ERROR",
-        description: "Fail to process the request",
-      };
+      ThrowError();
     });
 }
 
@@ -40,10 +41,7 @@ function getReceivedInfo(msg_id) {
         return response.data;
       })
       .catch(() => {
-        return {
-          responseCode: "RESPONSE_ERROR",
-          description: "Fail to process the request",
-        };
+        ThrowError();
       });
   }
 
@@ -67,10 +65,7 @@ function sendToAll(
       return response.data;
     })
     .catch(() => {
-      return {
-        responseCode: "RESPONSE_ERROR",
-        description: "Fail to process the request",
-      };
+      ThrowError();
     });
 }
 
@@ -96,10 +91,7 @@ function sendByRid(
       return response.data;
     })
     .catch(() => {
-      return {
-        responseCode: "RESPONSE_ERROR",
-        description: "Fail to process the request",
-      };
+      ThrowError();
     });
 }
 
@@ -125,10 +117,7 @@ function sendToTagsList(
       return response.data;
     })
     .catch(() => {
-      return {
-        responseCode: "RESPONSE_ERROR",
-        description: "Fail to process the request",
-      };
+      ThrowError();
     });
 }
 
