@@ -33,6 +33,18 @@ function getSendRecords() {
     });
 }
 
+function getAllTags(){
+  let obtain_url = jpush_server + "/ getAllTags";
+  return axios
+    .get(obtain_url)
+    .then((response) => {
+      return response.data;
+    })
+    .catch(() => {
+      ThrowError();
+    });
+}
+
 function getReceivedInfo(msg_id) {
     let obtain_url = jpush_server + "/getReceivedInfo?msg_id=" + msg_id;
     return axios
@@ -127,5 +139,6 @@ export const jpushService = {
   sendToAll,
   sendByRid,
   sendToTagsList,
-  getReceivedInfo
+  getReceivedInfo,
+  getAllTags
 };

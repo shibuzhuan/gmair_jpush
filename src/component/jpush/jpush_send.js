@@ -1,16 +1,10 @@
 import React, { Component } from "react";
-import {
-  Input,
-  Button,
-  Radio,
-  Modal,
-  Space,
-} from "antd";
+import { Input, Button, Radio, Modal, Space } from "antd";
 import { jpushService } from "../../service/jpush.service";
 import Highlighter from "react-highlight-words";
 import { SearchOutlined } from "@ant-design/icons";
 import JpushTable from "./jpush_table";
-import JpushForm from './jpush_form';
+import JpushForm from "./jpush_form";
 
 class JpushSend extends Component {
   constructor(props) {
@@ -30,6 +24,7 @@ class JpushSend extends Component {
       searchedColumn: "",
       filter: [],
       filteredInfo: null,
+      tags_list: [],
     };
   }
 
@@ -39,6 +34,11 @@ class JpushSend extends Component {
         user_list: result,
       });
       this.getFilter();
+    });
+    jpushService.getAllTags().then((result) => {
+      this.setState({
+        tags_list: result,
+      });
     });
   }
 
@@ -60,6 +60,14 @@ class JpushSend extends Component {
     this.setState({
       user_list: data,
     });
+
+    // let tag = this.state.tags_list;
+    // for(let i of tag){
+    //   i.key = i.tags;
+    // }
+    // this.setState({
+    //   tags_list: tag,
+    // });
   }
 
   handleChange({ current: pageNum, pageSize }, filters, sorter) {
@@ -292,6 +300,14 @@ class JpushSend extends Component {
       },
     ];
 
+    const tagsColomns = [
+      {
+        title: "标签",
+        dataIndex: "tag",
+        key: "tag",
+      },
+    ];
+
     const { loading, selectedRowKeys } = this.state;
     const rowSelection = {
       selectedRowKeys,
@@ -312,9 +328,10 @@ class JpushSend extends Component {
           <Radio.Button value="tag">指定同一标签的用户推送</Radio.Button>
         </Radio.Group>
         {this.state.notificationStatus === "all" && (
-          <JpushForm submit={this.submit} notiStatus="all"/>
+          <JpushForm submit={this.submit} notiStatus="all" />
         )}
-        {this.state.user_list.length > 0 && (
+        {this.state.user_list.length > 0 &&
+          this.state.notificationStatus !== "all" && (
             <div>
               <div style={{ marginBottom: 16 }}>
                 <Button
@@ -341,65 +358,71 @@ class JpushSend extends Component {
               </div>
               {this.state.notificationStatus === "rid" && (
                 <div>
-              <Modal
-                title="指定设备id推送"
-                visible={this.state.isModalVisible}
-                onOk={this.submit1}
-                onCancel={this.handleCancel}
-                footer={[
-                  <Button
-                    key="cancel"
-                    htmlType="button"
-                    style={{ marginLeft: "10px" }}
-                    onClick={this.handleCancel}
+                  <Modal
+                    title="指定设备id推送"
+                    visible={this.state.isModalVisible}
+                    onOk={this.submit1}
+                    onCancel={this.handleCancel}
+                    footer={[
+                      <Button
+                        key="cancel"
+                        htmlType="button"
+                        style={{ marginLeft: "10px" }}
+                        onClick={this.handleCancel}
+                      >
+                        取消
+                      </Button>,
+                    ]}
+                    okButtonProps={{ disabled: !this.state.filled }}
                   >
-                    取消
-                  </Button>,
-                ]}
-                okButtonProps={{ disabled: !this.state.filled }}
-              >
-                <JpushForm notiStatus="rid" selectedRowKeys={this.state.selectedRowKeys}/>
-              </Modal>
-              <JpushTable
-                rowSelection={rowSelection}
-                dataSource={this.state.user_list}
-                columns={columns}
-                onChange={this.handleChange}
-              />
-              </div>
+                    <JpushForm
+                      notiStatus="rid"
+                      selectedRowKeys={this.state.selectedRowKeys}
+                    />
+                  </Modal>
+                  <JpushTable
+                    rowSelection={rowSelection}
+                    dataSource={this.state.user_list}
+                    columns={columns}
+                    onChange={this.handleChange}
+                  />
+                </div>
               )}
               {this.state.notificationStatus === "tag" && (
-              <div>
-                <Modal
-                closable="false"
-                title="指定同一标签的用户推送"
-                visible={this.state.isModalVisible}
-                onOk={this.handleCancel}
-                onCancel={this.handleCancel}
-                footer={[
-                  <Button
-                    key="cancel"
-                    htmlType="button"
-                    style={{ marginLeft: "10px" }}
-                    onClick={this.handleCancel}
+                <div>
+                  <Modal
+                    closable="false"
+                    title="指定同一标签的用户推送"
+                    visible={this.state.isModalVisible}
+                    onOk={this.handleCancel}
+                    onCancel={this.handleCancel}
+                    footer={[
+                      <Button
+                        key="cancel"
+                        htmlType="button"
+                        style={{ marginLeft: "10px" }}
+                        onClick={this.handleCancel}
+                      >
+                        取消
+                      </Button>,
+                    ]}
                   >
-                    取消
-                  </Button>,
-                ]}
-              >
-                 <JpushForm notiStatus="tag" selectedRowKeys={this.state.selectedRowKeys}></JpushForm>
-              </Modal>
-              <JpushTable
-                  rowSelection={rowSelection}
-                  dataSource={this.state.user_list}
-                  columns={columns}
-                  onChange={this.handleChange}
-                />
-              <div>同一标签选择一名用户即可</div>
-              </div>
+                    <JpushForm
+                      notiStatus="tag"
+                      selectedRowKeys={this.state.selectedRowKeys}
+                    ></JpushForm>
+                  </Modal>
+                  <JpushTable
+                    rowSelection={rowSelection}
+                    dataSource={this.state.user_list}
+                    columns={columns}
+                    onChange={this.handleChange}
+                  />
+                  <div>同一标签选择一名用户即可</div>
+                </div>
               )}
-        </div>
-      )}
+            </div>
+          )}
       </div>
     );
   }
