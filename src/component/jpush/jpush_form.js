@@ -26,6 +26,7 @@ class JpushForm extends Component {
       timeToLive: "",
       pic_url: "",
       filled: false,
+      tags_list: props.tags_list,
     };
   }
 
@@ -57,7 +58,6 @@ class JpushForm extends Component {
   };
 
   submit1 = () => {
-      console.log(this.state.notificationContent, this.state.notificationTitle, this.state.timeToLive)
     jpushService
       .sendByRid(
         this.state.notificationTitle,
@@ -73,12 +73,6 @@ class JpushForm extends Component {
   };
 
   submit2 = () => {
-    let tagsList = [];
-    for (let i = 0, l = this.state.selectedRowKeys.length; i < l; i++) {
-      if (tagsList.indexOf(this.state.selectedRowKeys[i]) === -1) {
-        tagsList.push(this.state.selectedRowKeys[i]);
-      }
-    }
     jpushService
       .sendToTagsList(
         this.state.notificationTitle,
@@ -86,7 +80,7 @@ class JpushForm extends Component {
         this.state.pic_url,
         this.state.content,
         this.state.timeToLive,
-        tagsList
+        this.state.tags_list
       )
       .then((result) => {
         this.notiMessage(result);
@@ -95,7 +89,9 @@ class JpushForm extends Component {
 
   componentWillReceiveProps(props) {
     this.setState({
+      selectedRowKeys:props.selectedRowKeys,
       notiStatus: props.notiStatus,
+      tags_list: props.tags_list
     });
     this.clear_content();
   }
