@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const jpush_server = "http://127.0.0.1:8080/msg";
+const jpush_server = "http://127.0.0.1:8080";
 
 
 function ThrowError(){
@@ -10,7 +10,7 @@ function ThrowError(){
   };
 }
 function getAllUserInfo() {
-  let obtain_url = jpush_server + "/getAllUserInfo";
+  let obtain_url = jpush_server + "/user/getAllUserInfo";
   return axios
     .get(obtain_url)
     .then((response) => {
@@ -22,7 +22,7 @@ function getAllUserInfo() {
 }
 
 function getSendRecords() {
-  let obtain_url = jpush_server + "/getSendRecords";
+  let obtain_url = jpush_server + "/record/getSendRecords";
   return axios
     .get(obtain_url)
     .then((response) => {
@@ -34,7 +34,7 @@ function getSendRecords() {
 }
 
 function getAllTags(){
-  let obtain_url = jpush_server + "/ getAllTags";
+  let obtain_url = jpush_server + "/user/ getAllTags";
   return axios
     .get(obtain_url)
     .then((response) => {
@@ -46,7 +46,7 @@ function getAllTags(){
 }
 
 function getReceivedInfo(msg_id) {
-    let obtain_url = jpush_server + "/getReceivedInfo?msg_id=" + msg_id;
+    let obtain_url = jpush_server + "/record/getReceivedInfo?msg_id=" + msg_id;
     return axios
       .get(obtain_url)
       .then((response) => {
@@ -70,7 +70,7 @@ function sendToAll(
   if (pic_url !== "") params.append("pic_url", pic_url);
   if (content !== "") params.append("content", content);
   params.append("timeToLive", timeToLive);
-  let obtain_url = jpush_server + "/sendToAll";
+  let obtain_url = jpush_server + "/msg/sendToAll";
   return axios
     .post(obtain_url, params)
     .then((response) => {
@@ -96,7 +96,7 @@ function sendByRid(
   if (content !== "") params.append("content", content);
   params.append("timeToLive", timeToLive);
   params.append("ridsList", ridsList);
-  let obtain_url = jpush_server + "/sendByRid";
+  let obtain_url = jpush_server + "/msg/sendByRid";
   return axios
     .post(obtain_url, params)
     .then((response) => {
@@ -122,7 +122,7 @@ function sendToTagsList(
   if (content !== "") params.append("content", content);
   params.append("timeToLive", timeToLive);
   params.append("tagsList", tagsList);
-  let obtain_url = jpush_server + "/sendToTagsList";
+  let obtain_url = jpush_server + "/msg/sendToTagsList";
   return axios
     .post(obtain_url, params)
     .then((response) => {

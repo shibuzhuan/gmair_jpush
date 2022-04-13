@@ -162,7 +162,7 @@ class JpushForm extends Component {
           >
             <Input placeholder="请输入推送内容简介" />
           </Form.Item>
-          <Form.Item label="通知内容" onChange={this.process_content} value={this.state.content}>
+          <Form.Item label="通知内容" name="content" onChange={this.process_content} value={this.state.content}>
             <Input.TextArea placeholder="请输入推送内容" />
           </Form.Item>
           <Form.Item
@@ -186,7 +186,7 @@ class JpushForm extends Component {
           >
             <Input placeholder="请输入存活时间" />
           </Form.Item>
-          <Form.Item label="推送图片" onChange={this.process_picurl} value={this.state.pic_url}>
+          <Form.Item label="推送图片" name="url" onChange={this.process_picurl} value={this.state.pic_url}>
             <Input placeholder="请输入图片url" />
           </Form.Item>
           <Form.Item>
