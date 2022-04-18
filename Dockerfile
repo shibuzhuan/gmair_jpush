@@ -7,7 +7,7 @@ COPY . .
 ENV CI=true
 
 RUN npm config set registry https://registry.npm.taobao.org \
-    && npm ic \
+    && npm ci \
     && npm run build
 
 FROM nginx
