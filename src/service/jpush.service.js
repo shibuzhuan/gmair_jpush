@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const jpush_server = "http://127.0.0.1:8080";
+const jpush_server = "http://172.19.240.182:8080";
 
 
 function ThrowError(){
