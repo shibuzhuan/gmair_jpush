@@ -226,6 +226,7 @@ class JpushSend extends Component {
   }
 
   render() {
+    // eslint-disable-next-line react/no-direct-mutation-state
     this.state.filteredInfo = this.state.filteredInfo || {};
     const columns = [
       {
@@ -324,7 +325,7 @@ class JpushSend extends Component {
           <JpushForm submit={this.submit} notiStatus="all" />
         )}
         {this.state.user_list.length > 0 &&
-          this.state.notificationStatus == "rid" && (
+          this.state.notificationStatus === "rid" && (
             <div>
               <div style={{ marginBottom: 16 }}>
                 <Button

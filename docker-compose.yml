@@ -1,0 +1,10 @@
+services:
+  app:
+    image: gmair_jpush
+    container_name: frontend
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    ports:
+      - 80:80
+    
