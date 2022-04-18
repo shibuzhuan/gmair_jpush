@@ -7,7 +7,4 @@ services:
       context: ./
       dockerfile: ./Dockerfile
     ports:
-      - 80:80
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-    
+      - 3000:3000
