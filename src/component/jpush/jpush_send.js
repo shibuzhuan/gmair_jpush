@@ -323,7 +323,7 @@ class JpushSend extends Component {
         {this.state.notificationStatus === "all" && (
           <JpushForm submit={this.submit} notiStatus="all" />
         )}
-        {this.state.user_list.length > 0 &&
+        {this.state.user_list && this.state.user_list.length > 0 &&
           this.state.notificationStatus == "rid" && (
             <div>
               <div style={{ marginBottom: 16 }}>
