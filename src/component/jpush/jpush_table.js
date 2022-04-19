@@ -45,7 +45,7 @@ class JpushTable extends Component {
       render() {
         return (
             <div>
-              {this.state.user_list.length > 0 && (
+              {this.state.user_list && this.state.user_list.length > 0 && (
                 <Table
                   dataSource={this.state.user_list}
                   columns={this.state.columns}
